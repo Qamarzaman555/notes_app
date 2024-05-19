@@ -18,7 +18,9 @@ class NotesVU extends StackedView<NotesVM> {
   @override
   Widget builder(BuildContext context, NotesVM viewModel, Widget? child) {
     return Scaffold(
-      appBar: AppBar(title: Text('Notes $uuid')),
+      appBar: AppBar(
+        title: const Text('Notes'),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: viewModel.notesStream(uuid),
         builder: (context, snapshot) {
@@ -49,8 +51,16 @@ class NotesVU extends StackedView<NotesVM> {
                       MaterialPageRoute(
                           builder: (_) => AddNotesVU(uuid: uuid, notes: note)));
                 },
-                title: Text(note.message ?? ''),
+                title: Text(note.message ?? 'No Title'),
                 subtitle: Text(viewModel.getTimeDate(note.timestamp ?? '')),
+                trailing: IconButton(
+                  onPressed: () {
+                    viewModel.deleteNote(
+                        userId: uuid,
+                        noteId: viewModel.notes[index].uuid.toString());
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
               );
             },
           );

@@ -81,7 +81,7 @@ class SignUpVM extends BaseViewModel {
   }
 
   void onNameSaved(String? value) {
-    password = value;
+    name = value;
     // user?.email = email;
   }
 
@@ -119,7 +119,7 @@ class SignUpVM extends BaseViewModel {
     if (formKey.currentState!.validate()) {
       formKey.currentState?.save();
 
-      firebaseAuth
+      await firebaseAuth
           .createUserWithEmailAndPassword(email: email!, password: password!)
           .then((value) {
         final uid = value.user!.uid.toString();
