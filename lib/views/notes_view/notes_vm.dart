@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 import '../../models/note_model.dart';
 import '../../services/fb_client.dart';
+import '../../utils/routes/routes_name.dart';
+import '../../utils/utils.dart';
 
 class NotesVM extends BaseViewModel {
   // NotesVM() {
@@ -13,6 +16,7 @@ class NotesVM extends BaseViewModel {
 
   List<NotesModel> notes = [];
   List<NotesModel> notesList = [];
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   final _client = FBClient();
 
@@ -22,6 +26,13 @@ class NotesVM extends BaseViewModel {
         .doc(uuid)
         .collection('notes')
         .snapshots();
+  }
+
+  logOut(BuildContext context) {
+    auth.signOut().then((value) {
+      Navigator.pushNamed(context, RouteName.welcomeScreen);
+      Utils.toastMessage('Logged Out Successfully');
+    });
   }
 
   // Future<void> getNotes() async {

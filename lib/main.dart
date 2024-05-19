@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         ),
         appBarTheme: const AppBarTheme(backgroundColor: Colors.orange),
       ),
-      initialRoute: RouteName.backgroundScreen,
+      initialRoute: RouteName.welcomeScreen,
       onGenerateRoute: Routes.generateRoute,
     );
   }

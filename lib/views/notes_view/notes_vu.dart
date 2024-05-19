@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:notes/utils/utils.dart';
+import 'package:notes/widgets/uk_appbar.dart';
 import 'package:stacked/stacked.dart';
 
 import '../add_notes_view/add_notes_vu.dart';
@@ -18,53 +20,77 @@ class NotesVU extends StackedView<NotesVM> {
   @override
   Widget builder(BuildContext context, NotesVM viewModel, Widget? child) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notes'),
+      appBar: UkAppBar(
+        title: 'Notes',
+        actions: [
+          IconButton(
+              onPressed: () {
+                viewModel.logOut(context);
+              },
+              icon: const Icon(Icons.logout_outlined)),
+        ],
+        automaticallyImplyLeading: false,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: viewModel.notesStream(uuid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            debugPrint('StreamBuilder: Waiting for data...');
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: viewModel.notesStream(uuid),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              debugPrint('StreamBuilder: Waiting for data...');
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError) {
-            debugPrint('StreamBuilder: Error - ${snapshot.error}');
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+            if (snapshot.hasError) {
+              debugPrint('StreamBuilder: Error - ${snapshot.error}');
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            debugPrint('StreamBuilder: No notes found');
-            return const Center(child: Text('No notes found'));
-          }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              debugPrint('StreamBuilder: No notes found');
+              return const Center(child: Text('No notes found'));
+            }
 
-          debugPrint('StreamBuilder: Data received');
-          return ListView.builder(
-            itemCount: viewModel.notes.length,
-            itemBuilder: (context, index) {
-              final note = viewModel.notes[index];
-              return ListTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => AddNotesVU(uuid: uuid, notes: note)));
-                },
-                title: Text(note.message ?? 'No Title'),
-                subtitle: Text(viewModel.getTimeDate(note.timestamp ?? '')),
-                trailing: IconButton(
-                  onPressed: () {
-                    viewModel.deleteNote(
-                        userId: uuid,
-                        noteId: viewModel.notes[index].uuid.toString());
+            debugPrint('StreamBuilder: Data received');
+            return ListView.separated(
+              itemCount: viewModel.notes.length,
+              itemBuilder: (context, index) {
+                final note = viewModel.notes[index];
+                return ListTile(
+                  tileColor:
+                      Theme.of(context).colorScheme.tertiary.withOpacity(0.5),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                AddNotesVU(uuid: uuid, notes: note)));
                   },
-                  icon: const Icon(Icons.delete),
-                ),
-              );
-            },
-          );
-        },
+                  title: Text(note.message ?? '',
+                      style: Theme.of(context).textTheme.headlineSmall),
+                  subtitle: Text(
+                    viewModel.getTimeDate(note.timestamp ?? ''),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      viewModel.deleteNote(
+                          userId: uuid,
+                          noteId: viewModel.notes[index].uuid.toString());
+                    },
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: Colors.red.shade400,
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return 12.spaceY;
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -73,9 +99,9 @@ class NotesVU extends StackedView<NotesVM> {
             return AddNotesVU(uuid: uuid);
           }));
         },
-        child: const Icon(
+        child: Icon(
           Icons.add,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
         ),
       ),
     );

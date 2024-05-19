@@ -33,17 +33,24 @@ class AddNotesVU extends StackedView<AddNotesVM> {
         ),
       ),
       bottomSheet: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(left: 32, right: 32, bottom: 40),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            maximumSize: const Size(double.infinity, 48),
-            minimumSize: const Size(double.infinity, 48),
-            fixedSize: const Size(double.infinity, 48),
-          ),
+              maximumSize: Size(MediaQuery.sizeOf(context).width / 1.5, 48),
+              minimumSize: Size(MediaQuery.sizeOf(context).width / 1.5, 48),
+              fixedSize: Size(MediaQuery.sizeOf(context).width / 1.5, 48),
+              backgroundColor: Theme.of(context).colorScheme.tertiary),
           onPressed: notes == null
               ? () => viewModel.addUser(uuid) // Pass UUID to addUser
               : () => viewModel.updateUser(uuid), // Pass UUID to updateUser
-          child: Text(notes == null ? 'Save' : 'Update'),
+          child: Text(
+            notes == null ? 'Save' : 'Update',
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                color:
+                    Theme.of(context).colorScheme.onPrimary.withOpacity(0.5)),
+          ),
         ),
       ),
     );

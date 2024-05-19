@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:notes/utils/routes/routes_name.dart';
+import '../../views/forgot_password_view/forgot_password_vu.dart';
 import '../../views/login_view/login_vu.dart';
 import '../../views/signup_view/signup_vu.dart';
-import '../../widgets/background_vu.dart';
+import '../../views/welcome_view/welcome_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -12,10 +13,10 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const LoginVU());
       case RouteName.signupScreen:
         return MaterialPageRoute(builder: (_) => const SignUpVU());
-      case RouteName.backgroundScreen:
+      case RouteName.welcomeScreen:
         return MaterialPageRoute(builder: (_) => const BackgroundVU());
-      // case RouteName.homeScreen:
-      //   return MaterialPageRoute(builder: (_) => const HomeVU());
+      case RouteName.forgotPassScreen:
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordVU());
 
       default:
         return MaterialPageRoute(builder: (_) {

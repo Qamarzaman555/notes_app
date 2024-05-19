@@ -1,6 +1,7 @@
 import 'package:notes/utils/utils.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
+import '../../utils/routes/routes_name.dart';
 import '../../widgets/uk_text_button.dart';
 import '../../widgets/uk_text_field.dart';
 import 'login_vm.dart';
@@ -43,25 +44,31 @@ class LoginVU extends StackedView<LoginVM> {
               ),
               onSaved: viewModel.onPasswordSaved,
               validator: viewModel.passwordValidator),
+          4.spaceY,
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteName.forgotPassScreen);
+                },
+                child: Text(
+                  'forgot password? Click here  ',
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge!
+                      .copyWith(color: Colors.black.withOpacity(0.7)),
+                )),
+          ),
           12.spaceY,
           UkTextButton(
-            text: viewModel.isBusy
-                ? SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    child: const CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  )
-                : const Text(
-                    'Sign In',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700),
-                  ),
-            // label: 'Sign In',
+            text: const Text(
+              'Sign In',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700),
+            ),
             onPressed: () {
               viewModel.login(context);
             },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UkTextButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color? backgroundColor, foregroundColor;
   final String? label;
   final Widget? text;
@@ -9,7 +9,7 @@ class UkTextButton extends StatelessWidget {
     super.key,
     this.label,
     this.text,
-    required this.onPressed,
+    this.onPressed,
     this.backgroundColor,
     this.foregroundColor,
   });
