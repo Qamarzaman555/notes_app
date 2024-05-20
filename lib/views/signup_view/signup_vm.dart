@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/utils/utils.dart';
 import 'package:stacked/stacked.dart';
+import '../../services/session_manager.dart';
 import '../notes_view/notes_vu.dart';
 
 class SignUpVM extends BaseViewModel {
@@ -122,6 +123,7 @@ class SignUpVM extends BaseViewModel {
       await firebaseAuth
           .createUserWithEmailAndPassword(email: email!, password: password!)
           .then((value) {
+        SessionController().userId = value.user!.uid.toString();
         final uid = value.user!.uid.toString();
 
         firestore.collection('users').doc(uid).set({
@@ -129,27 +131,14 @@ class SignUpVM extends BaseViewModel {
           'email': value.user!.email!.toLowerCase(),
           'name': name
         }).then((_) {
+          Utils.toastMessage('Account Created Successfully');
+
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return NotesVU(uuid: uid);
           }));
         }).catchError((error) {
-          Utils.toastMessage(error.toString());
+          Utils.toastMessage('Something went wrong, try again');
         });
-
-        //   ref.child(value.user!.uid.toString()).set({
-        //     'uid': uid,
-        //     'email': value.user!.email!.toLowerCase().toString(),
-        //   }).then((value) {
-        //     // Navigator.pushNamed(context, RouteName.homeScreen);
-        //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-        //       return NotesVU(uuid: uid);
-        //     }));
-        //   }).onError((error, stackTrace) {
-        //     Utils.toastMessage(error.toString());
-        //   });
-        //   Utils.toastMessage('User Created Successfully');
-        // }).onError((error, stackTrace) {
-        //   Utils.toastMessage(error.toString());
       });
     }
     setBusy(false);

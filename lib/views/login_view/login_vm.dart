@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:notes/utils/utils.dart';
 import 'package:stacked/stacked.dart';
 
+import '../../services/session_manager.dart';
 import '../notes_view/notes_vu.dart';
 
 // import '../../utils/routes/routes_name.dart';
@@ -65,21 +66,22 @@ class LoginVM extends BaseViewModel {
     if (formKey.currentState!.validate()) {
       formKey.currentState?.save();
 
-      try {
-        UserCredential userCredential = await firebaseAuth
-            .signInWithEmailAndPassword(email: email!, password: password!);
+      firebaseAuth
+          .signInWithEmailAndPassword(email: email!, password: password!)
+          .then((userCredential) {
         final uid = userCredential.user!.uid;
-
+        SessionController().userId = userCredential.user!.uid.toString();
         Utils.toastMessage('User Logged In Successfully');
 
         // Navigate to the Notes view with the user's UID
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return NotesVU(uuid: uid);
         }));
-      } catch (error) {
+      }).catchError((error) {
         Utils.toastMessage(error.toString());
-      }
+      }).whenComplete(() => setBusy(false));
+    } else {
+      setBusy(false);
     }
-    setBusy(false);
   }
 }

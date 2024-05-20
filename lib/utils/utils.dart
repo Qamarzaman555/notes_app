@@ -11,8 +11,9 @@ class Utils {
   static toastMessage(String message) {
     Fluttertoast.showToast(
         msg: message,
-        backgroundColor: Colors.orange[400],
-        textColor: Colors.white,
+        backgroundColor:
+            const Color.fromRGBO(206, 147, 216, 1).withOpacity(0.7),
+        textColor: Colors.black.withOpacity(0.4),
         fontSize: 16);
   }
 }
